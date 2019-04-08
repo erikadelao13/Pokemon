@@ -12,6 +12,11 @@ import { StyleSheet } from 'react-native';
         flex: 1,
         margin: 2
    },
+   loader: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+   },
   itemText: {
         textTransform: 'uppercase',
         fontFamily: 'sans-serif-light',
@@ -39,8 +44,16 @@ import { StyleSheet } from 'react-native';
    backgroundColor: "#FA7B5F"
    },
   addIcon: {
-    fontSize: 30,
+    fontSize: 13,
     color: 'white'
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4,
+    borderColor: 'rgba(0, 0, 0, 0.1)',
   }
  });
  export default styles;

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, Image, Button, FlatList, TouchableWithoutFeedback, Alert, TouchableOpacity, ToastAndroid} from 'react-native';
+import {Platform, StyleSheet, Text, View, Image, Button, FlatList, TouchableWithoutFeedback, Alert, TouchableOpacity, ToastAndroid, ActivityIndicator} from 'react-native';
 import styles from '../Styles/pokemonscreen.js';
 import {StackNavigator, createStackNavigator, createAppContainer} from 'react-navigation';
 import flatListData from './RegionData';
@@ -18,13 +18,8 @@ const formatData = (pokemon, numColumns) =>{
 };
 let item;
 const numColumns = 3;
+const numColumns2 = 3;
 export default class App extends Component<Props> {
-    static navigationOptions = ({navigation}) => {
-        return {
-            name: navigation.state.params.name,
-        };
-    };
-
     constructor(props){
         super(props);
         this.state={
@@ -32,33 +27,60 @@ export default class App extends Component<Props> {
             pokemon: [], //lista donde se van a guardar los pokemon
             url: this.props.navigation.state.params.url,
             count: 0,
-            selected: []
+            selected: [],
+            visibleModal: null,
         }
     }
+
+      _renderButton = (text, onPress) => (
+        <TouchableOpacity style={styles.floatingButton} onPress={onPress}>
+            <Text style={styles.addIcon}>{text}</Text>
+        </TouchableOpacity>
+      );
+
+        renderItem2 = ({item2,index}) => {
+              return(
+            <View style={styles.item}>
+                <Text style={styles.itemText}>{(this.state.selected)+' , '}</Text>
+                <Image style={styles.img} source={{uri: 'http://pokestadium.com/sprites/xy/'+this.state.selected+'.gif'}}></Image>
+            </View>
+            );
+        };
+
+      _renderModalContent = () => (
+        <View style={styles.modalContent}>
+            <FlatList //es como un for each
+            data={this.state.selected} //colocamos la lista
+            renderItem={this.renderItem2}
+            keyExtractor={(item2, index) => index.toString()}
+            />
+          {this._renderButton('Close', () => this.setState({ visibleModal: null }))}
+        </View>
+      );
 
     componentDidMount(){ //se va ejecutar inmediatamente despues de que los componentes hayan sido montados
         this.getPokemon();
-    }
+    };
+
     touchPokemon = (item) => {
         if(([...this.state.selected].length == 0) || ([...this.state.selected].length < 6)){
-            var newStateArray = this.state.selected.slice();
-            newStateArray.push(item);
+           /* var newStateArray = this.state.selected.slice();
+            newStateArray.push(item); */
             this.setState({
               count: this.state.count + 1,
-              selected: newStateArray,
+              selected: [...this.state.selected, item],
             });
             Alert.alert('Escogiste a '+item);
-            return([...this.state.selected]);
         }else if([...this.state.selected].length >= 6){
             Alert.alert('Ya escogiste 6 pokemons, no puedes escoger mas.');
         }
+       /* if([...this.state.selected].length ==6){
+            return(this.state.selected);
+        } */
     };
 
-    sendPokemons = () => {
-        if((this.touchPokemon(item) != null)||(this.touchPokemon(item) != 0)){
-            Alert.alert('orale we ahi te van 6 pokemons');
-            return(this.touchPokemon(item));
-        }
+    sendPokemons = (item) => {
+        console.log(this.touchPokemon(item))
     }
 
     getPokemon = () =>{
@@ -91,9 +113,9 @@ export default class App extends Component<Props> {
   render() {
     if(this.state.loading){
         return (
-            <View style={styles.container}>
-                <Text> Cargando Pokemons!</Text>
-            </View>
+            <View style={styles.loader}>
+                <ActivityIndicator size="large" color="blue" />
+             </View>
         );
     }
     return (
@@ -104,7 +126,10 @@ export default class App extends Component<Props> {
             keyExtractor={(item, index) => index.toString()}
             numColumns={numColumns}
             />
-            <TouchableOpacity style={styles.floatingButton} onPress={() => {this.props.navigation.navigate('teams'),{selected: this.sendPokemons()}}}><Text style={styles.addIcon}>Go!</Text></TouchableOpacity>
+            {this._renderButton('Show Team', () => this.setState({ visibleModal: 1 }))}
+            <Modal isVisible={this.state.visibleModal === 1}>
+              {this._renderModalContent()}
+            </Modal>
         </View>
     );
   }

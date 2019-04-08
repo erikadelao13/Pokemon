@@ -17,6 +17,7 @@ import { StyleSheet } from 'react-native';
    itemText: {
     textTransform: 'uppercase',
     fontFamily: 'sans-serif-light',
+    alignItems: 'center',
     fontSize: 30,
     color: '#000000'
    },

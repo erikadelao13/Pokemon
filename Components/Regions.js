@@ -29,12 +29,14 @@ renderItem = ({item,index}) => {
 };
   render() {
     return (
-        <FlatList
-         data={flatListData}
-         style={styles.container}
-         renderItem={this.renderItem}
-         keyExtractor={(item, index) => index.toString()}
-         ItemSeparatorComponent={this.renderSeparatorView}/>
+        <View style={{flex: 1, backgroundColor: '#F5FCFF', flexDirection: 'column',}}>
+            <FlatList
+             data={flatListData}
+             style={styles.container}
+             renderItem={this.renderItem}
+             keyExtractor={(item, index) => index.toString()}
+             ItemSeparatorComponent={this.renderSeparatorView}/>
+        </View>
     );
   }
 }
